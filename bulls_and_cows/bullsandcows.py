@@ -5,39 +5,65 @@ class Game:
     """Bulls and Cows game"""
 
     def __init__(self, input_func):
-        self.input_func = input_func
+        self._input_func = input_func
         self._secret_number = randint(1000, 9999)
 
     def start(self):
-        print("Hi there!\nI've generated a random 4 digit number for you.\nLet's play a bulls and cows game.\nEnter a "
-              "number")
-        guesses = self._get_and_check_answers()
-        print("Correct, you've guessed the right number in {} guesses!\nThat's amazing, average, not so good, ...".format(guesses))
+        print("Hi there!\n"
+              "I've generated a random 4 digit number for you.\n"
+              "Let's play a bulls and cows game.\n"
+              "Enter a number")
+        guesses = self.get_and_check_answers()
+        print("Correct, you've guessed the right number in {} guesses!\nThat's amazing...".format(guesses))
 
-    def _get_and_check_answers(self):
-        guesses = 0
+    def get_and_check_answers(self):
+        attempts = 0
         while True:
-            guesses += 1
-            guess = int(self.input_func())
+            attempts += 1
+            guess = int(self._input_func())
             if guess == self._secret_number:
                 break
             else:
-                print("{} bulls, {} cows".format(self._bulls_in(guess), self._cows_in(guess)))
-        return guesses
+                print("{}, {}".format(Bulls(self._secret_number, guess), Cows(self._secret_number, guess)))
+        return attempts
 
-    def _bulls_in(self, number):
+
+class Bulls:
+    def __init__(self, secret, guess):
+        self.secret = secret
+        self.guess = guess
+
+    def __int__(self):
         bulls = 0
-        for l, r in zip(str(self._secret_number), str(number)):
+        for l, r in zip(str(self.secret), str(self.guess)):
             if l == r:
                 bulls += 1
         return bulls
 
-    def _cows_in(self, number):
+    def __str__(self):
+        value = int(self)
+        if value == 1:
+            return "{} bull".format(value)
+        return "{} bulls".format(value)
+
+
+class Cows:
+    def __init__(self, secret, guess):
+        self.secret = secret
+        self.guess = guess
+
+    def __int__(self):
         cows = 0
-        for l, r in zip(str(self._secret_number), str(number)):
-            if l != r and r in str(self._secret_number):
+        for l, r in zip(str(self.secret), str(self.guess)):
+            if l != r and r in str(self.secret):
                 cows += 1
         return cows
+
+    def __str__(self):
+        value = int(self)
+        if value == 1:
+            return "{} cow".format(value)
+        return "{} cows".format(value)
 
 
 if __name__ == '__main__':
