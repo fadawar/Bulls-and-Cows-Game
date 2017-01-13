@@ -35,8 +35,8 @@ class Bulls:
 
     def __int__(self):
         bulls = 0
-        for l, r in zip(str(self.secret), str(self.guess)):
-            if l == r:
+        for sec_digit, guess_digit in zip(str(self.secret), str(self.guess)):
+            if sec_digit == guess_digit:
                 bulls += 1
         return bulls
 
@@ -54,8 +54,8 @@ class Cows:
 
     def __int__(self):
         cows = 0
-        for l, r in zip(str(self.secret), str(self.guess)):
-            if l != r and r in str(self.secret):
+        for sec_digit, guess_digit in zip(str(self.secret), str(self.guess)):
+            if sec_digit != guess_digit and guess_digit in str(self.secret):
                 cows += 1
         return cows
 
