@@ -1,4 +1,4 @@
-from random import randint
+from random import randint, shuffle
 
 
 class Game:
@@ -6,7 +6,13 @@ class Game:
 
     def __init__(self, input_func):
         self._input_func = input_func
-        self._secret_number = randint(1000, 9999)
+        self._secret_number = self.generate_secret_number()
+
+    def generate_secret_number(self):
+        digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+        shuffle(digits)
+        num = ''.join(digits[:4])
+        return int(num)
 
     def start(self):
         print("Hi there!\n"

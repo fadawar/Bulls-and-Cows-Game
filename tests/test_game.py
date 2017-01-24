@@ -11,6 +11,12 @@ def test_secret_number_has_4_digits():
     assert len(str(g._secret_number)) == 4
 
 
+def test_secret_numbers_digits_are_different():
+    g = Game(lambda x: 0)
+    s = set(str(g._secret_number))
+    assert len(s) == 4
+
+
 def test_ask_until_correct_answer():
     input_generator = (i for i in ['2016', '2017'])
     g = Game(lambda: next(input_generator))
