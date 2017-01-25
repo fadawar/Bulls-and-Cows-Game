@@ -1,9 +1,8 @@
-from random import randint, shuffle
+from random import shuffle
 
 
 class Game:
     """Bulls and Cows game"""
-
     def __init__(self, input_func):
         self._input_func = input_func
         self._secret_number = self.generate_secret_number()
@@ -35,6 +34,7 @@ class Game:
 
 
 class Bulls:
+    """Count bulls between two numbers"""
     def __init__(self, secret, guess):
         self.secret = secret
         self.guess = guess
@@ -54,6 +54,7 @@ class Bulls:
 
 
 class Cows:
+    """Count cows between two numbers"""
     def __init__(self, secret, guess):
         self.secret = secret
         self.guess = guess
