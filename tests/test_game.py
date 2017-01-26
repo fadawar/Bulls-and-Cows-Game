@@ -35,3 +35,12 @@ def test_count_of_cows():
     assert int(Cows(1234, 1020)) == 1
     assert int(Cows(1234, 4321)) == 4
     assert int(Cows(1234, 1111)) == 3
+
+
+def test_check_number():
+    g = Game(lambda x: 0)
+    assert g.number_is_correct(1000) is False
+    assert g.number_is_correct(123456) is False
+    assert g.number_is_correct(123) is False
+    assert g.number_is_correct(1233) is False
+    assert g.number_is_correct(1234) is True

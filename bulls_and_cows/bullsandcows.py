@@ -16,21 +16,29 @@ class Game:
     def start(self):
         print("Hi there!\n"
               "I've generated a random 4 digit number for you.\n"
-              "Let's play a bulls and cows game.\n"
-              "Enter a number")
+              "Let's play a bulls and cows game.\n")
         guesses = self.get_and_check_answers()
         print("Correct, you've guessed the right number in {} guesses!\nThat's amazing...".format(guesses))
 
     def get_and_check_answers(self):
         attempts = 0
         while True:
+            print("Enter a number")
             attempts += 1
             guess = int(self._input_func())
+            if not self.number_is_correct(guess):
+                continue
             if guess == self._secret_number:
                 break
             else:
                 print("{}, {}".format(Bulls(self._secret_number, guess), Cows(self._secret_number, guess)))
         return attempts
+
+    def number_is_correct(self, number):
+        s = set(str(number))
+        if len(s) == 4:
+            return True
+        return False
 
 
 class Bulls:
