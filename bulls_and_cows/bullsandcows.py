@@ -1,85 +1,81 @@
-from random import shuffle
+import random
+import string
 
 
 class Game:
     """Bulls and Cows game"""
+
     def __init__(self, input_func):
         self._input_func = input_func
-        self._secret_number = self.generate_secret_number()
+        self._secret_number = ''.join(random.sample(string.digits, 4))
+        self._guesses = 0
 
-    def generate_secret_number(self):
-        digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
-        shuffle(digits)
-        num = ''.join(digits[:4])
-        return int(num)
-
-    def start(self):
-        print("Hi there!\n"
-              "I've generated a random 4 digit number for you.\n"
-              "Let's play a bulls and cows game.\n")
-        guesses = self.get_and_check_answers()
-        print("Correct, you've guessed the right number in {} guesses!\nThat's amazing...".format(guesses))
+    def play(self):
+        print("Hi there!")
+        print("I've generated a random 4 digit number for you.")
+        print("Let's play a bulls and cows game.")
+        self.get_and_check_answers()
+        self.print_results()
 
     def get_and_check_answers(self):
-        attempts = 0
         while True:
-            print("Enter a number")
-            attempts += 1
-            guess = int(self._input_func())
-            if not self.number_is_correct(guess):
-                continue
-            if guess == self._secret_number:
-                break
-            else:
-                print("{}, {}".format(Bulls(self._secret_number, guess), Cows(self._secret_number, guess)))
-        return attempts
+            try:
+                self._guesses += 1
+                number = self.ask_for_number()
+                if number == self._secret_number:
+                    break       # correct guess, stop asking
+                else:
+                    count = BullsCowsCount(self._secret_number, number)
+                    print("{}, {}".format(count.bulls(), count.cows()))
+            except WrongInputException as e:
+                print(e)
+                continue        # go and ask again
 
-    def number_is_correct(self, number):
-        s = set(str(number))
-        if len(s) == 4:
-            return True
-        return False
+    def ask_for_number(self):
+        print('Enter a number')
+        input_ = self._input_func().strip()
+        if not input_.isdecimal() or len(set(input_)) != 4:
+            raise WrongInputException('Wrong input. Input must be 4 different digits.')
+        return input_
+
+    def print_results(self):
+        print("Correct, you've guessed the right number in {} guesses!".format(self._guesses))
+        if self._guesses <= 5:
+            print("That's amazing!")
+        elif self._guesses <= 10:
+            print("That's average.")
+        else:
+            print("That's not so good.")
 
 
-class Bulls:
-    """Count bulls between two numbers"""
+class BullsCowsCount:
+    """Count bulls and cows between two numbers"""
+
     def __init__(self, secret, guess):
-        self.secret = secret
-        self.guess = guess
+        self._bulls = self._cows = 0
+        self._count(secret, guess)
 
-    def __int__(self):
-        bulls = 0
-        for sec_digit, guess_digit in zip(str(self.secret), str(self.guess)):
-            if sec_digit == guess_digit:
-                bulls += 1
-        return bulls
+    def _count(self, secret, guess):
+        for i in range(4):
+            if secret[i] == guess[i]:
+                self._bulls += 1
+            elif guess[i] in secret:
+                self._cows += 1
 
-    def __str__(self):
-        value = int(self)
-        if value == 1:
-            return "{} bull".format(value)
-        return "{} bulls".format(value)
+    def bulls(self):
+        if self._bulls == 1:
+            return "{} bull".format(self._bulls)
+        return "{} bulls".format(self._bulls)
+
+    def cows(self):
+        if self._cows == 1:
+            return "{} cow".format(self._cows)
+        return "{} cows".format(self._cows)
 
 
-class Cows:
-    """Count cows between two numbers"""
-    def __init__(self, secret, guess):
-        self.secret = secret
-        self.guess = guess
-
-    def __int__(self):
-        cows = 0
-        for sec_digit, guess_digit in zip(str(self.secret), str(self.guess)):
-            if sec_digit != guess_digit and guess_digit in str(self.secret):
-                cows += 1
-        return cows
-
-    def __str__(self):
-        value = int(self)
-        if value == 1:
-            return "{} cow".format(value)
-        return "{} cows".format(value)
+class WrongInputException(Exception):
+    pass
 
 
 if __name__ == '__main__':
-    Game(input).start()
+    Game(input).play()
